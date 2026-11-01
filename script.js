@@ -109,6 +109,7 @@
   });
 
   /* ---------- Custom cursor (smooth follow) ---------- */
+ /* ---------- Custom cursor (Fluid Spotlight Cursor) ---------- */
   var canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -121,20 +122,28 @@
     window.addEventListener("pointermove", function (e) {
       mouseX = e.clientX;
       mouseY = e.clientY;
-      dot.style.transform = "translate(" + (mouseX - 3) + "px," + (mouseY - 3) + "px)";
+      // النقطة بتتحرك فوراً مع الماوس بدون تأخير
+      dot.style.transform = "translate3d(" + (mouseX - 3) + "px, " + (mouseY - 3) + "px, 0)";
     });
 
     (function loop() {
-      ringX += (mouseX - ringX) * 0.16;
-      ringY += (mouseY - ringY) * 0.16;
+      // حركة Smooth Trailing فيزياء 0.12 لحجم وتتبع سلس جداً
+      ringX += (mouseX - ringX) * 0.12;
+      ringY += (mouseY - ringY) * 0.12;
       var half = ring.offsetWidth / 2;
-      ring.style.transform = "translate(" + (ringX - half) + "px," + (ringY - half) + "px)";
+      ring.style.transform = "translate3d(" + (ringX - half) + "px, " + (ringY - half) + "px, 0)";
       requestAnimationFrame(loop);
     })();
 
     $$("a, button, input, textarea, .card").forEach(function (el) {
-      el.addEventListener("pointerenter", function () { ring.classList.add("grow"); });
-      el.addEventListener("pointerleave", function () { ring.classList.remove("grow"); });
+      el.addEventListener("pointerenter", function () {
+        ring.classList.add("grow");
+        dot.classList.add("grow");
+      });
+      el.addEventListener("pointerleave", function () {
+        ring.classList.remove("grow");
+        dot.classList.remove("grow");
+      });
     });
   }
 
